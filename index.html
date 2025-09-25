@@ -464,7 +464,15 @@
         
         async function callGemini(systemPrompt, userQuery) {
             geminiButtons.style.display = 'none';
-            const apiKey = "";
+
+            // API Key has been added.
+            const apiKey = "AIzaSyBH7D6YxyLwyQT254KLEnnHC1fttlql-X0";
+
+            if (apiKey === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
+                 console.error("Gemini API Key is missing.");
+                 return "The baker is busy! Please check the configuration.";
+            }
+
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
             
