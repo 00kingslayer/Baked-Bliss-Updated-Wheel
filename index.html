@@ -10,16 +10,27 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <!-- Tailwind is no longer needed, styles are now internal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Pacifico&display=swap" rel="stylesheet">
     <style>
-        /* --- Base & Layout (Replaced Tailwind) --- */
+        /* --- Base & Responsive Layout (Mobile-First) --- */
+        :root {
+            --brand-red: #A40606;
+            --brand-gold: #D98324;
+            --wheel-yellow: #fde047;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #A40606;
-            background-image: linear-gradient(315deg, #A40606 0%, #D98324 74%);
+            background-color: var(--brand-red);
+            background-image: linear-gradient(315deg, var(--brand-red) 0%, var(--brand-gold) 74%);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -27,24 +38,26 @@
             justify-content: center;
             min-height: 100vh;
             padding: 1rem;
-            color: #1f2937; /* Default text color */
+            color: var(--text-dark);
         }
         header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             z-index: 10;
         }
         .baking-bliss-title {
             font-family: 'Pacifico', cursive;
-            font-size: 3.75rem; /* text-6xl */
-            font-weight: 900; /* font-black */
+            /* Using clamp for fluid typography */
+            font-size: clamp(2.75rem, 15vw, 4.5rem);
+            font-weight: 900;
             color: white;
             text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+            line-height: 1.1;
         }
         header p {
-            font-size: 1.25rem; /* text-xl */
+            font-size: clamp(1rem, 4vw, 1.25rem);
             color: white;
-            font-weight: 600; /* font-semibold */
+            font-weight: 600;
         }
         .main-container {
             position: relative;
@@ -55,31 +68,28 @@
         }
         .pointer {
             position: absolute;
-            top: -1rem; /* -top-4 */
+            top: -0.75rem;
             z-index: 10;
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-top: 30px solid #fde047; /* border-t-yellow-300 */
+            border-top: 30px solid var(--wheel-yellow);
             filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07));
         }
         .wheel-container {
             -webkit-tap-highlight-color: transparent;
             position: relative;
-            width: 20rem; /* w-80 */
-            height: 20rem; /* h-80 */
-            margin-top: 2rem; /* my-8 */
-            margin-bottom: 2rem; /* my-8 */
+            /* Fluid width for wheel */
+            width: 85vw;
+            height: 85vw;
+            max-width: 20rem;
+            max-height: 20rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        @media (min-width: 768px) {
-            .wheel-container {
-                width: 24rem; /* md:w-96 */
-                height: 24rem; /* md:h-96 */
-            }
         }
         .wheel-svg {
             width: 100%;
@@ -88,16 +98,17 @@
             filter: drop-shadow(0 0 15px rgba(0,0,0, 0.3));
         }
         .prize-symbol {
-            font-size: 48px;
+             /* Fluid font size for symbols */
+            font-size: clamp(1.5rem, 10vw, 3rem);
         }
         .spin-trigger {
             position: absolute;
-            width: 6rem; /* w-24 */
-            height: 6rem; /* h-24 */
-            background-color: #dc2626; /* bg-red-600 */
-            border-radius: 9999px; /* rounded-full */
-            border: 4px solid #fde047; /* border-4 border-yellow-300 */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            width: 5rem;
+            height: 5rem;
+            background-color: #dc2626;
+            border-radius: 9999px;
+            border: 4px solid var(--wheel-yellow);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -109,18 +120,17 @@
         }
         .spin-trigger span {
             color: white;
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 900; /* font-black */
+            font-size: 1.5rem;
+            font-weight: 900;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
         }
 
-        /* --- Modals --- */
+        /* --- Modals (CORRECTED & RESPONSIVE) --- */
         .modal-backdrop {
-            display: none; /* hidden */
+            display: none;
             position: fixed;
             inset: 0;
             background-color: rgba(0,0,0,0.7);
-            display: flex;
             align-items: center;
             justify-content: center;
             z-index: 50;
@@ -128,18 +138,15 @@
         }
         .modal-panel {
             background-color: white;
-            border-radius: 1rem; /* rounded-2xl */
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
-            padding: 1.5rem; /* p-6 */
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 1.5rem;
             text-align: center;
-            max-width: 24rem; /* max-w-sm */
-            width: 100%;
+            width: 90%;
+            max-width: 24rem;
             transform: scale(0.95);
             opacity: 0;
             transition: transform 0.3s, opacity 0.3s;
-        }
-        @media (min-width: 768px) {
-            .modal-panel { padding: 2rem; /* md:p-8 */ }
         }
         .modal-panel-visible {
             transform: scale(1);
@@ -152,16 +159,45 @@
             0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
+        
+        #prizeName {
+            /* Fluid font size for the prize name */
+            font-size: clamp(1.5rem, 8vw, 2.25rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 1rem 0;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
 
-        /* --- Backgrounds & Animations --- */
+        /* --- Animations & Utility --- */
         .confetti { position: absolute; width: 10px; height: 10px; background-color: #f0f; opacity: 0.7; animation: fall 3s linear forwards; }
         @keyframes fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
         .background-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .background-animation .item { position: absolute; bottom: -100px; font-size: 2rem; animation: float 20s linear infinite; opacity: 0.3; color: #FFD700; }
         @keyframes float { 0% { transform: translateY(0) rotate(0deg); opacity: 0.3; } 100% { transform: translateY(-120vh) rotate(720deg); opacity: 0; } }
-        
-        /* Utility */
         .hidden { display: none; }
+
+        /* --- Media Queries for Larger Screens --- */
+        @media (min-width: 768px) {
+            header {
+                margin-bottom: 1.5rem;
+            }
+            .wheel-container {
+                max-width: 24rem;
+                max-height: 24rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+             .spin-trigger {
+                width: 6rem;
+                height: 6rem;
+            }
+            .spin-trigger span {
+                 font-size: 1.875rem;
+            }
+            .modal-panel { padding: 2rem; }
+        }
     </style>
 </head>
 <body>
@@ -176,7 +212,7 @@
     <div class="main-container">
         <div class="pointer"></div>
         <div class="wheel-container">
-            <div id="wheel" class="w-full h-full"></div>
+            <div id="wheel"></div>
             <div id="spinTrigger" class="spin-trigger">
                 <span>SPIN</span>
             </div>
@@ -188,48 +224,48 @@
         <div class="modal-panel">
             <div class="modal-content">
                 <h2 style="font-size: 1.5rem; font-weight: 900; color: #dc2626; margin-bottom: 0.5rem;">YOU WON!</h2>
-                <p id="prizeName" style="font-size: 2.25rem; font-weight: 700; color: #1f2937; margin: 1rem 0; line-height: 1.1;"></p>
-                <p style="color: #4b5563; margin-bottom: 1rem;">Show this screen to our staff to redeem!</p>
+                <p id="prizeName"></p>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Show this screen to our staff to redeem!</p>
                 <div style="background-color: #f3f4f6; border-radius: 0.5rem; padding: 0.75rem; margin: 1rem 0;">
-                    <span style="font-size: 0.875rem; color: #6b7280;">UNIQUE CODE</span>
+                    <span style="font-size: 0.875rem; color: var(--text-light);">UNIQUE CODE</span>
                     <p id="prizeId" style="font-size: 1.5rem; font-family: monospace; letter-spacing: 0.1em;"></p>
                 </div>
                 
                 <div id="geminiFeatures" style="margin-top: 1.5rem; display: grid; gap: 1rem;">
                     <div id="geminiButtons" style="display: grid; gap: 0.75rem;">
-                        <button id="fortuneButton" style="width: 100%; background-color: #f59e0b; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s;">
+                        <button id="fortuneButton" style="width: 100%; background-color: #f59e0b; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; border: none; cursor: pointer;">
                             ✨ Get Your Sweet Fortune!
                         </button>
-                        <button id="funFactButton" style="width: 100%; background-color: #0ea5e9; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s;">
+                        <button id="funFactButton" style="width: 100%; background-color: #0ea5e9; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; border: none; cursor: pointer;">
                             🧁 Get a Baker's Fun Fact!
                         </button>
-                        <button id="nicknameButton" style="width: 100%; background-color: #8b5cf6; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s;">
+                        <button id="nicknameButton" style="width: 100%; background-color: #8b5cf6; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; border: none; cursor: pointer;">
                             🎉 Name Your Treat!
                         </button>
                     </div>
 
                     <div id="fortuneContainer">
-                        <div id="fortuneLoading" class="hidden" style="margin: 1rem 0; color: #6b7280;">Baking your fortune... 🥠</div>
+                        <div id="fortuneLoading" class="hidden" style="margin: 1rem 0; color: var(--text-light);">Baking your fortune... 🥠</div>
                         <div id="fortuneResult" class="hidden" style="margin-top: 1rem; padding: 1rem; background-color: #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; border-radius: 0 0.5rem 0.5rem 0;">
                             <p id="fortuneText" style="font-size: 1.125rem; font-style: italic;"></p>
                         </div>
                     </div>
                     <div id="funFactContainer">
-                        <div id="funFactLoading" class="hidden" style="margin: 1rem 0; color: #6b7280;">Looking up a fun fact... 📜</div>
+                        <div id="funFactLoading" class="hidden" style="margin: 1rem 0; color: var(--text-light);">Looking up a fun fact... 📜</div>
                         <div id="funFactResult" class="hidden" style="margin-top: 1rem; padding: 1rem; background-color: #e0f2fe; border-left: 4px solid #0ea5e9; color: #075985; border-radius: 0 0.5rem 0.5rem 0;">
                             <p id="funFactText" style="font-size: 1.125rem;"></p>
                         </div>
                     </div>
                     <div id="nicknameContainer">
-                        <div id="nicknameLoading" class="hidden" style="margin: 1rem 0; color: #6b7280;">Inventing a legendary name... ✨</div>
+                        <div id="nicknameLoading" class="hidden" style="margin: 1rem 0; color: var(--text-light);">Inventing a legendary name... ✨</div>
                         <div id="nicknameResult" class="hidden" style="margin-top: 1rem; padding: 1rem; background-color: #f5d0fe; border-left: 4px solid #8b5cf6; color: #6b21a8; border-radius: 0 0.5rem 0.5rem 0;">
-                            <p style="color: #4b5563; font-size: 0.875rem;">Your treat shall henceforth be known as:</p>
+                            <p style="color: var(--text-light); font-size: 0.875rem;">Your treat shall henceforth be known as:</p>
                             <p id="nicknameText" style="font-size: 1.5rem; font-weight: 700;"></p>
                         </div>
                     </div>
                 </div>
                 
-                <button id="closeModalButton" style="margin-top: 2rem; width: 100%; background-color: #374151; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s;">
+                <button id="closeModalButton" style="margin-top: 2rem; width: 100%; background-color: #374151; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; border: none; cursor: pointer;">
                     Awesome!
                 </button>
             </div>
@@ -240,9 +276,9 @@
         <div class="modal-panel">
             <div class="modal-content">
                 <div style="font-size: 3.75rem; margin-bottom: 1rem;">🤔</div>
-                <h2 style="font-size: 1.5rem; font-weight: 900; color: #1f2937; margin-bottom: 0.5rem;">Whoops!</h2>
-                <p style="color: #4b5563; margin-bottom: 1.5rem;">You've already had your spin for today. Come back tomorrow for another chance to win!</p>
-                <button id="closeAlreadySpunModalButton" style="width: 100%; background-color: #ef4444; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s;">
+                <h2 style="font-size: 1.5rem; font-weight: 900; color: var(--text-dark); margin-bottom: 0.5rem;">Whoops!</h2>
+                <p style="color: var(--text-light); margin-bottom: 1.5rem;">You've already had your spin for today. Come back tomorrow for another chance to win!</p>
+                <button id="closeAlreadySpunModalButton" style="width: 100%; background-color: #ef4444; color: white; font-weight: 700; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; transition: transform 0.2s; border: none; cursor: pointer;">
                     Got It!
                 </button>
             </div>
@@ -250,7 +286,6 @@
     </div>
 
     <script type="module">
-        // Firebase and game logic remains unchanged.
         const firebaseConfig = {
             apiKey: "AIzaSyDauZ3AwxVRK_mvRT89qsXW4g84cgq8Rjc",
             authDomain: "bakingblisswheel.firebaseapp.com",
@@ -263,6 +298,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, limit, getDocs, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // --- DOM Elements ---
         const spinTrigger = document.getElementById('spinTrigger');
         const wheelContainer = document.getElementById('wheel');
         const resultModal = document.getElementById('resultModal');
@@ -272,7 +308,6 @@
         const confettiContainer = document.getElementById('confetti-container');
         const alreadySpunModal = document.getElementById('alreadySpunModal');
         const closeAlreadySpunModalButton = document.getElementById('closeAlreadySpunModalButton');
-        
         const geminiButtons = document.getElementById('geminiButtons');
         const fortuneButton = document.getElementById('fortuneButton');
         const fortuneLoading = document.getElementById('fortuneLoading');
@@ -286,11 +321,13 @@
         const nicknameLoading = document.getElementById('nicknameLoading');
         const nicknameResult = document.getElementById('nicknameResult');
         const nicknameText = document.getElementById('nicknameText');
+        
+        // --- Game State & Config ---
         let currentPrize = '';
-
+        let isSpinning = false;
+        let db;
         const prizes = [ "THE GANG BONUS!", "₹25 OFF any Slice Cake", "THE INFLUENCER DEAL", "BUY 1 CUPCAKE, GET 1 HALF OFF", "₹50 OFF on ₹275+", "ADD A CUPCAKE FOR ₹25!", "DOUBLE YOUR LUCK", "₹20 OFF ANY BROWNIE" ];
         const prizeSymbols = ["🙌", "🍰", "🤳", "🧁+🧁", "💰", "+🧁", "🍀", "🍫"];
-        
         const dailyStrategies = {
             day1: [ { prize: "DOUBLE YOUR LUCK", weight: 30 }, { prize: "THE INFLUENCER DEAL", weight: 25 }, { prize: "₹20 OFF ANY BROWNIE", weight: 15 }, { prize: "BUY 1 CUPCAKE, GET 1 HALF OFF", weight: 15 }, { prize: "ADD A CUPCAKE FOR ₹25!", weight: 10 }, { prize: "₹25 OFF any Slice Cake", weight: 10 }, { prize: "₹50 OFF on ₹275+", weight: 4 }, { prize: "THE GANG BONUS!", weight: 1 } ],
             day2: [ { prize: "ADD A CUPCAKE FOR ₹25!", weight: 25 }, { prize: "₹20 OFF ANY BROWNIE", weight: 20 }, { prize: "BUY 1 CUPCAKE, GET 1 HALF OFF", weight: 20 }, { prize: "DOUBLE YOUR LUCK", weight: 15 }, { prize: "THE INFLUENCER DEAL", weight: 10 }, { prize: "₹25 OFF any Slice Cake", weight: 10 }, { prize: "₹50 OFF on ₹275+", weight: 8 }, { prize: "THE GANG BONUS!", weight: 2 } ],
@@ -298,11 +335,7 @@
             day4: [ { prize: "₹50 OFF on ₹275+", weight: 30 }, { prize: "ADD A CUPCAKE FOR ₹25!", weight: 25 }, { prize: "THE GANG BONUS!", weight: 10 }, { prize: "BUY 1 CUPCAKE, GET 1 HALF OFF", weight: 15 }, { prize: "₹20 OFF ANY BROWNIE", weight: 15 }, { prize: "₹25 OFF any Slice Cake", weight: 5 }, { prize: "DOUBLE YOUR LUCK", weight: 3 }, { prize: "THE INFLUENCER DEAL", weight: 2 } ],
         };
 
-        let isSpinning = false;
-        let currentRotation = 0;
-        let db;
-        let wheelSVG;
-
+        // --- Functions ---
         function drawWheel() {
             const numSegments = prizes.length;
             const size = 384; 
@@ -310,25 +343,20 @@
             const colors = ["#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF"];
             
             let svgContent = `<svg class="wheel-svg" viewBox="0 0 ${size} ${size}">`;
-
             for (let i = 0; i < numSegments; i++) {
                 const startAngle = i * (360 / numSegments);
                 const endAngle = (i + 1) * (360 / numSegments);
                 const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
                 const start = polarToCartesian(radius, radius, endAngle);
                 const end = polarToCartesian(radius, radius, startAngle);
-
                 const pathData = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`;
                 svgContent += `<path d="${pathData}" fill="${colors[i]}" stroke="#E5E7EB" stroke-width="2" />`;
-
                 const symbolAngle = startAngle + (360 / numSegments) / 2;
                 const symbolPosition = polarToCartesian(radius, radius * 0.65, symbolAngle);
                 svgContent += `<text x="${symbolPosition.x}" y="${symbolPosition.y}" dy=".3em" text-anchor="middle" class="prize-symbol">${prizeSymbols[i]}</text>`;
             }
-
             svgContent += `</svg>`;
             wheelContainer.innerHTML = svgContent;
-            wheelSVG = wheelContainer.querySelector('.wheel-svg');
         }
 
         function polarToCartesian(centerX, radius, angleInDegrees) {
@@ -351,13 +379,10 @@
         
         function createBackgroundItems() {
             const container = document.getElementById('background-animation');
-            const items = ['✨', '⭐', '💖', '🍰'];
-            const itemCount = 20;
-
-            for (let i = 0; i < itemCount; i++) {
+            for (let i = 0; i < 20; i++) {
                 const item = document.createElement('span');
                 item.className = 'item';
-                item.textContent = items[Math.floor(Math.random() * items.length)];
+                item.textContent = ['✨', '⭐', '💖', '🍰'][Math.floor(Math.random() * 4)];
                 item.style.left = `${Math.random() * 100}vw`;
                 item.style.animationDuration = `${15 + Math.random() * 15}s`;
                 item.style.animationDelay = `${Math.random() * 10}s`;
@@ -380,11 +405,6 @@
             }, 300);
         }
         
-        // --- Initialize ---
-        drawWheel();
-        createBackgroundItems();
-        db = initializeFirebase();
-
         async function getRiggedPrize(strategy) {
             const availablePrizes = dailyStrategies[strategy]?.filter(s => prizes.includes(s.prize)) || dailyStrategies.day1.filter(s => prizes.includes(s.prize));
             const totalWeight = availablePrizes.reduce((sum, p) => sum + p.weight, 0);
@@ -399,13 +419,12 @@
         async function getNextCode() {
             if (!db) return "OFFLINE-" + Math.random().toString(36).substring(2, 8).toUpperCase();
             const counterRef = doc(db, "codes", "counter");
-            let nextCode = "BLISS-00001";
             try {
+                let nextCode = "";
                 await runTransaction(db, async (transaction) => {
                     const counterDoc = await transaction.get(counterRef);
                     let newCount = counterDoc.exists() ? counterDoc.data().count + 1 : 1;
-                    const generatedCode = "BLISS-" + Math.random().toString(36).substring(2, 6).toUpperCase() + newCount.toString().padStart(3,'0');
-                    nextCode = generatedCode;
+                    nextCode = "BLISS-" + Math.random().toString(36).substring(2, 6).toUpperCase() + newCount.toString().padStart(3,'0');
                     transaction.set(counterRef, { count: newCount });
                 });
                 return nextCode;
@@ -415,52 +434,9 @@
             }
         }
 
-        spinTrigger.addEventListener('click', async () => {
-            if (isSpinning) return;
-            
-            let limitSpins = true;
-            if (db) {
-                const limitRef = doc(db, "config", "spinLimit");
-                try {
-                    const docSnap = await getDoc(limitRef);
-                    if (docSnap.exists() && docSnap.data().enabled === false) {
-                        limitSpins = false;
-                    }
-                } catch (e) { console.error("Could not check spin limit", e)}
-            }
-            
-            if (limitSpins) {
-                const today = new Date().toISOString().split('T')[0];
-                if (localStorage.getItem('bakedBlissLastSpin') === today) {
-                    showModal(alreadySpunModal);
-                    return;
-                }
-            }
-
-            isSpinning = true;
-            let winningPrizeIndex = 0;
-            if (db) {
-                const strategyRef = doc(db, "config", "strategy");
-                const docSnap = await getDoc(strategyRef);
-                const currentStrategy = docSnap.exists() ? docSnap.data().currentStrategy : "day1";
-                winningPrizeIndex = await getRiggedPrize(currentStrategy);
-            } else {
-                winningPrizeIndex = Math.floor(Math.random() * prizes.length);
-            }
-            const degreesPerSegment = 360 / prizes.length;
-            const totalSpins = 360 * 5; 
-            const targetRotation = 360 - (winningPrizeIndex * degreesPerSegment);
-            const randomJitter = (Math.random() - 0.5) * (degreesPerSegment * 0.8); 
-            const finalRotation = totalSpins + targetRotation - randomJitter;
-            currentRotation = finalRotation;
-            wheelSVG.style.transform = `rotate(${finalRotation}deg)`;
-            setTimeout(() => showResult(winningPrizeIndex), 4100);
-        });
-        
         async function showResult(prizeIndex) {
             currentPrize = prizes[prizeIndex]; 
             prizeNameEl.textContent = currentPrize;
-            
             prizeIdEl.textContent = "Generating...";
             showModal(resultModal);
             triggerConfetti();
@@ -481,30 +457,13 @@
                 }
             }
             
-            const today = new Date().toISOString().split('T')[0];
-            localStorage.setItem('bakedBlissLastSpin', today);
-            
+            localStorage.setItem('bakedBlissLastSpin', new Date().toISOString().split('T')[0]);
             geminiButtons.style.display = 'grid';
             [fortuneLoading, fortuneResult, funFactLoading, funFactResult, nicknameLoading, nicknameResult].forEach(el => el.classList.add('hidden'));
         }
-
-        closeModalButton.addEventListener('click', () => {
-            hideModal(resultModal);
-            isSpinning = false;
-        });
-
-        closeAlreadySpunModalButton.addEventListener('click', () => {
-            hideModal(alreadySpunModal);
-        });
-
-        // --- Gemini Feature Logic ---
-        async function callGemini(systemPrompt, userQuery, resultEl, loadingEl, resultContainer) {
-             geminiButtons.style.display = 'none';
-             loadingEl.classList.remove('hidden');
-             [fortuneResult, funFactResult, nicknameResult].forEach(el => {
-                if(el !== resultContainer) el.classList.add('hidden');
-             });
-
+        
+        async function callGemini(systemPrompt, userQuery) {
+            geminiButtons.style.display = 'none';
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
@@ -513,36 +472,86 @@
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API error: ${response.status}`);
                 const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                return text || "Something sweet is on my mind, but I can't find the words!";
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "My oven's too hot to think! Try again.";
             } catch (error) {
                 console.error("Error fetching from Gemini:", error);
-                return "The recipe book is a little smudged... Please try again!";
-            } finally {
-                loadingEl.classList.add('hidden');
-                resultContainer.classList.remove('hidden');
+                return "The recipe book is smudged... Please try again!";
             }
         }
         
+        // --- Event Listeners ---
+        spinTrigger.addEventListener('click', async () => {
+            if (isSpinning) return;
+            
+            let limitSpins = true;
+            if (db) {
+                const limitRef = doc(db, "config", "spinLimit");
+                try {
+                    const docSnap = await getDoc(limitRef);
+                    if (docSnap.exists() && docSnap.data().enabled === false) limitSpins = false;
+                } catch (e) { console.error("Could not check spin limit", e)}
+            }
+            
+            if (limitSpins && localStorage.getItem('bakedBlissLastSpin') === new Date().toISOString().split('T')[0]) {
+                showModal(alreadySpunModal);
+                return;
+            }
+
+            isSpinning = true;
+            const wheelSVG = wheelContainer.querySelector('.wheel-svg');
+            let winningPrizeIndex = 0;
+
+            if (db) {
+                const strategyRef = doc(db, "config", "strategy");
+                const docSnap = await getDoc(strategyRef);
+                const currentStrategy = docSnap.exists() ? docSnap.data().currentStrategy : "day1";
+                winningPrizeIndex = await getRiggedPrize(currentStrategy);
+            } else {
+                winningPrizeIndex = Math.floor(Math.random() * prizes.length);
+            }
+
+            const degreesPerSegment = 360 / prizes.length;
+            const totalSpins = 360 * 5; 
+            const targetRotation = 360 - (winningPrizeIndex * degreesPerSegment);
+            const randomJitter = (Math.random() - 0.5) * (degreesPerSegment * 0.8); 
+            const finalRotation = totalSpins + targetRotation + randomJitter;
+            
+            wheelSVG.style.transform = `rotate(${finalRotation}deg)`;
+            setTimeout(() => showResult(winningPrizeIndex), 4100);
+        });
+
+        closeModalButton.addEventListener('click', () => { hideModal(resultModal); isSpinning = false; });
+        closeAlreadySpunModalButton.addEventListener('click', () => { hideModal(alreadySpunModal); });
+        
         fortuneButton.addEventListener('click', async () => {
-            const systemPrompt = "You are the joyful baker behind 'Baked Bliss'. Your fortunes are always short (1-2 sentences), sweet, funny, and themed around desserts, cakes, pastries, and happiness. Never mention being an AI.";
+            fortuneLoading.classList.remove('hidden');
+            [funFactResult, nicknameResult].forEach(el => el.classList.add('hidden'));
+            const systemPrompt = "You are the joyful baker behind 'Baked Bliss'. Your fortunes are always short (1-2 sentences), sweet, funny, and themed around desserts. Never mention being an AI.";
             const userQuery = `I just won '${currentPrize}'. Give me a sweet, happy fortune related to that!`;
-            const fortune = await callGemini(systemPrompt, userQuery, fortuneText, fortuneLoading, fortuneResult);
-            fortuneText.textContent = fortune.trim();
+            fortuneText.textContent = await callGemini(systemPrompt, userQuery);
+            fortuneLoading.classList.add('hidden');
+            fortuneResult.classList.remove('hidden');
         });
 
         funFactButton.addEventListener('click', async () => {
-            const systemPrompt = "You are a cheerful baker at 'Baked Bliss'. You know everything about desserts. Provide a single, fascinating fun fact or a creative serving suggestion for the item mentioned. Keep it short, exciting, and fun. Never mention being an AI.";
-            const userQuery = `Based on the prize I won, which is '${currentPrize}', give me a fun fact or serving suggestion. If the prize is generic like 'Double Your Luck', give me a general fun fact about celebration cakes.`;
-            const funFact = await callGemini(systemPrompt, userQuery, funFactText, funFactLoading, funFactResult);
-            funFactText.textContent = funFact.trim();
+            funFactLoading.classList.remove('hidden');
+            [fortuneResult, nicknameResult].forEach(el => el.classList.add('hidden'));
+            const systemPrompt = "You are a cheerful baker at 'Baked Bliss'. Provide a single, fascinating fun fact or creative serving suggestion. Keep it short and exciting. Never mention being an AI.";
+            const userQuery = `Based on my prize ('${currentPrize}'), give me a fun fact. If generic, a general cake fact.`;
+            funFactText.textContent = await callGemini(systemPrompt, userQuery);
+            funFactLoading.classList.add('hidden');
+            funFactResult.classList.remove('hidden');
         });
 
         nicknameButton.addEventListener('click', async () => {
-            const systemPrompt = "You are a creative and funny naming expert for desserts. Your job is to give a single, epic, and quirky nickname to a treat. Respond with ONLY the nickname in quotation marks, and nothing else.";
-            const userQuery = `Give a nickname to the prize I won: '${currentPrize}'. If the prize is generic like 'Double Your Luck', give a nickname to 'a lucky moment'.`;
-            const nickname = await callGemini(systemPrompt, userQuery, nicknameText, nicknameLoading, nicknameResult);
+            nicknameLoading.classList.remove('hidden');
+            [fortuneResult, funFactResult].forEach(el => el.classList.add('hidden'));
+            const systemPrompt = "You are a creative naming expert for desserts. Give a single, epic, quirky nickname. Respond with ONLY the nickname in quotation marks.";
+            const userQuery = `Give a nickname to the prize I won: '${currentPrize}'. If generic, nickname 'a lucky moment'.`;
+            const nickname = await callGemini(systemPrompt, userQuery);
             nicknameText.textContent = nickname.trim().replace(/"/g, '');
+            nicknameLoading.classList.add('hidden');
+            nicknameResult.classList.remove('hidden');
         });
 
         function triggerConfetti() {
@@ -557,6 +566,11 @@
                 confettiContainer.appendChild(confetti);
             }
         }
+
+        // --- Initial Page Load ---
+        drawWheel();
+        createBackgroundItems();
+        db = initializeFirebase();
     </script>
 </body>
 </html>
